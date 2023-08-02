@@ -1,4 +1,6 @@
+//Img icon
 import archiveIcon from "../../icons/archive.png";
+
 export const ArchiveTable: React.FC = () => {
     return (
         <div>

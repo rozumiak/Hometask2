@@ -1,82 +1,38 @@
-// interface TableProps {
-//     data: string
-// }
-//export const Table: React.FC<TableProps> = ({data}) => {
+//style
 import "./style.css";
+//img icon
 import archiveIcon from "../../icons/archive.png";
 import deleteIcon from "../../icons/delete.png";
 import editIcon from "../../icons/edit.png";
+//Core
+import React, { useEffect, useState } from "react";
+import { useSelector, useDispatch } from "react-redux";
+import { RootState } from "../../../engine/init/store";
+import { deleteItem } from "../../../engine/core/notes/notesSlice";
+//Components
 import { ArchiveTable } from "../ArchiveTable";
 import { StatusTable } from "../StatusTable";
 import { Modal } from "../Modal";
-import { useState, useEffect } from "react";
+//Utils
+import { parseDate } from "../../../engine/utils/parseDate";
 
 export const Table: React.FC = () => {
-    const [notes, setNotes] = useState([
-        {
-            id: Date.now() + 1,
-            name: "Shopping list",
-            created: "20-03-2021",
-            category: "Task",
-            content: "Tomatoes,bread",
-            dates: "",
-            isArchived: false,
-        },
-        {
-            id: Date.now() + 2,
-            name: "The theory",
-            created: "27-03-2021",
-            category: "Random thought",
-            content: "Evolution",
-            dates: "",
-            isArchived: false,
-        },
-        {
-            id: Date.now() + 3,
-            name: "New Feature",
-            created: "05-05-2021",
-            category: "Idea",
-            content: "Implement new feature on the 07.05.2021",
-            dates: "07.05.2021",
-            isArchived: false,
-        },
-        {
-            id: Date.now() + 4,
-            name: "William Gaddis",
-            created: "07-03-2021",
-            category: "Idea",
-            content: "You shell not pass",
-            dates: "",
-            isArchived: false,
-        },
-        {
-            id: Date.now() + 5,
-            name: "Books",
-            created: "15-05-2021",
-            category: "Task",
-            content: "Learn new language",
-            dates: "",
-            isArchived: false,
-        },
-        {
-            id: Date.now() + 6,
-            name: "Go in bar",
-            created: "20-07-2021",
-            category: "Random thought",
-            content: "Drink",
-            dates: "",
-            isArchived: false,
-        },
-        {
-            id: Date.now() + 7,
-            name: "Take a shower",
-            created: "21-02-2021",
-            category: "Random thought",
-            content: "Oh, yeah",
-            dates: "",
-            isArchived: false,
-        },
-    ]);
+    const items = useSelector((state: RootState) => state.notes.items);
+    const [isModalOpen, setIsModalOpen] = useState(false);
+    const dispatch = useDispatch();
+
+    const handleOpenModal = () => {
+        setIsModalOpen(true);
+    };
+    const handleCloseModal = () => {
+        setIsModalOpen(false);
+    };
+    const handleDeleteItem = (itemId: number) => {
+        dispatch(deleteItem(itemId));
+    };
+
+    useEffect(() => {}, [items]);
+
     return (
         <div className="container">
             <h1>Note Taking App</h1>
@@ -103,11 +59,51 @@ export const Table: React.FC = () => {
                             </th>
                         </tr>
                     </thead>
-                    <tbody></tbody>
+                    <tbody>
+                        {items.map((item) => (
+                            <tr key={item.id}>
+                                <td>{item.name}</td>
+                                <td>{item.created}</td>
+                                <td>{item.category}</td>
+                                <td>{item.content}</td>
+                                <td>{parseDate(item.content)}</td>
+                                <td>
+                                    {!item.isArchived ? (
+                                        <img
+                                            className="js--edit"
+                                            src={editIcon}
+                                            alt="Edit"
+                                        />
+                                    ) : (
+                                        ""
+                                    )}
+                                    <img
+                                        className="js--archive"
+                                        src={archiveIcon}
+                                        alt="Archive"
+                                    />
+                                    {!item.isArchived ? (
+                                        <img
+                                            className="js--delete"
+                                            src={deleteIcon}
+                                            alt="Delete"
+                                            onClick={() =>
+                                                handleDeleteItem(item.id)
+                                            }
+                                        />
+                                    ) : (
+                                        ""
+                                    )}
+                                </td>
+                            </tr>
+                        ))}
+                    </tbody>
                 </table>
-                <button type="submit">Create Note</button>
-                <Modal />
+                <button type="submit" onClick={handleOpenModal}>
+                    Create Note
+                </button>
             </form>
+            {isModalOpen && <Modal onClose={handleCloseModal} />}
             <ArchiveTable />
             <StatusTable />
         </div>

@@ -1,6 +1,14 @@
+//core
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
+import { RootState } from "../../init/store";
+//assets
 import { NoteItem } from "../../assets/types";
-const initialState = {
+
+interface State {
+    items: NoteItem[];
+    archivedItems: NoteItem[];
+}
+const initialState: State = {
     items: [
         {
             id: Date.now() + 1,
@@ -66,6 +74,7 @@ const initialState = {
             isArchived: false,
         },
     ],
+    archivedItems: [],
 };
 
 const notesSlice = createSlice({
@@ -81,10 +90,79 @@ const notesSlice = createSlice({
         },
         deleteAllItems: (state) => {
             state.items = [];
-        }
+        },
+        updateItem: (state, action: PayloadAction<NoteItem>) => {
+            const updatedItem = action.payload;
+            const itemIndex = state.items.findIndex(
+                (item) => item.id === updatedItem.id
+            );
+            if (itemIndex !== -1) {
+                state.items[itemIndex] = updatedItem;
+            }
+        },
+        archiveItem: (state, action: PayloadAction<number>) => {
+            const itemId = action.payload;
+            const itemIndex = state.items.findIndex(
+                (item) => item.id === itemId
+            );
+            if (itemIndex !== -1) {
+                state.items[itemIndex].isArchived = true;
+                state.archivedItems.push(state.items[itemIndex]);
+                state.items.splice(itemIndex, 1); // Видаляємо елемент з основного списку
+            }
+        },
+        archiveAllItems: (state) => {
+            state.items.forEach((item) => {
+                item.isArchived = true;
+                state.archivedItems.push(item);
+            });
+            state.items = [];
+        },
+
+        unarchiveItem: (state, action: PayloadAction<number>) => {
+            const itemId = action.payload;
+            const itemIndex = state.archivedItems.findIndex(
+                (item) => item.id === itemId
+            );
+            if (itemIndex !== -1) {
+                state.archivedItems[itemIndex].isArchived = false;
+                state.items.push(state.archivedItems[itemIndex]);
+                state.archivedItems.splice(itemIndex, 1); // Видаляємо елемент зі списку архівованих елементів
+            }
+        },
+        unarchiveAllItems: (state) => {
+            state.archivedItems.forEach((item) => {
+                item.isArchived = false;
+                state.items.push(item);
+            });
+            state.archivedItems = [];
+        },
     },
 });
 //action
-export const { addItem, deleteItem, deleteAllItems } = notesSlice.actions;
+export const {
+    addItem,
+    deleteItem,
+    deleteAllItems,
+    updateItem,
+    archiveItem,
+    unarchiveItem,
+    archiveAllItems,
+    unarchiveAllItems,
+} = notesSlice.actions;
 //reducer
 export default notesSlice.reducer;
+
+export const selectActiveItemsByCategory =
+    (category: string) => (state: RootState) => {
+        return state.notes.items.filter(
+            (item) => item.category === category && !item.isArchived
+        ).length;
+    };
+
+export const selectArchivedItemsByCategory =
+    (category: string) => (state: RootState) => {
+        return state.notes.archivedItems.filter(
+            (item) => item.category === category
+        ).length;
+    };

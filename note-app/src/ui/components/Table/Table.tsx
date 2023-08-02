@@ -11,6 +11,8 @@ import { RootState } from "../../../engine/init/store";
 import {
     deleteItem,
     deleteAllItems,
+    archiveItem,
+    archiveAllItems,
 } from "../../../engine/core/notes/notesSlice";
 //Components
 import { ArchiveTable } from "../ArchiveTable";
@@ -18,23 +20,41 @@ import { StatusTable } from "../StatusTable";
 import { Modal } from "../Modal";
 //Utils
 import { parseDate } from "../../../engine/utils/parseDate";
+import { NoteItem } from "../../../engine/assets/types";
 
 export const Table: React.FC = () => {
     const items = useSelector((state: RootState) => state.notes.items);
+
     const [isModalOpen, setIsModalOpen] = useState(false);
+    const [editedItem, setEditedItem] = useState<NoteItem | null>(null);
     const dispatch = useDispatch();
 
     const handleOpenModal = () => {
         setIsModalOpen(true);
     };
+
     const handleCloseModal = () => {
         setIsModalOpen(false);
+        setEditedItem(null);
     };
+
+    const handleEditItem = (item: NoteItem) => {
+        setEditedItem(item);
+        handleOpenModal();
+    };
+
     const handleDeleteItem = (itemId: number) => {
         dispatch(deleteItem(itemId));
     };
+
     const handleDeleteAllItems = () => {
         dispatch(deleteAllItems());
+    };
+    const handleArchiveItem = (itemId: number) => {
+        dispatch(archiveItem(itemId));
+    };
+    const handleArchiveAllItems = () => {
+        dispatch(archiveAllItems());
     };
 
     useEffect(() => {}, [items]);
@@ -56,6 +76,7 @@ export const Table: React.FC = () => {
                                     className="js--archive-all"
                                     src={archiveIcon}
                                     alt="ArchiveAll"
+                                    onClick={handleArchiveAllItems}
                                 />
                                 <img
                                     className="js--delete-all"
@@ -80,6 +101,7 @@ export const Table: React.FC = () => {
                                             className="js--edit"
                                             src={editIcon}
                                             alt="Edit"
+                                            onClick={() => handleEditItem(item)}
                                         />
                                     ) : (
                                         ""
@@ -88,6 +110,9 @@ export const Table: React.FC = () => {
                                         className="js--archive"
                                         src={archiveIcon}
                                         alt="Archive"
+                                        onClick={() =>
+                                            handleArchiveItem(item.id)
+                                        }
                                     />
                                     {!item.isArchived ? (
                                         <img
@@ -110,7 +135,9 @@ export const Table: React.FC = () => {
                     Create Note
                 </button>
             </form>
-            {isModalOpen && <Modal onClose={handleCloseModal} />}
+            {isModalOpen && (
+                <Modal onClose={handleCloseModal} editedItem={editedItem} />
+            )}
             <ArchiveTable />
             <StatusTable />
         </div>

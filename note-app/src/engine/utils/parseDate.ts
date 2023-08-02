@@ -7,7 +7,7 @@ export const parseDate = (contentValue: string) => {
         // Знаходимо збіги дати та формуємо рядки дати у форматі 'day/month/year'
         const { day, month, year, day2, month2, year2 } = match.groups!;
         const dateStr = day
-            ? `${day}/${month}/${year}`
+            ? `${day}/${month}/${year} `
             : `${day2}/${month2}/${year2}`;
         dates.push(dateStr);
     }

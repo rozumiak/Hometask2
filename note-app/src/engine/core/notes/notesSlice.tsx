@@ -78,10 +78,13 @@ const notesSlice = createSlice({
         deleteItem: (state, action: PayloadAction<number>) => {
             const itemId = action.payload;
             state.items = state.items.filter((item) => item.id !== itemId);
+        },
+        deleteAllItems: (state) => {
+            state.items = [];
         }
     },
 });
 //action
-export const { addItem, deleteItem } = notesSlice.actions;
+export const { addItem, deleteItem, deleteAllItems } = notesSlice.actions;
 //reducer
 export default notesSlice.reducer;

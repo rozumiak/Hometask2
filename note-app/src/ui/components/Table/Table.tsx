@@ -8,7 +8,10 @@ import editIcon from "../../icons/edit.png";
 import React, { useEffect, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { RootState } from "../../../engine/init/store";
-import { deleteItem } from "../../../engine/core/notes/notesSlice";
+import {
+    deleteItem,
+    deleteAllItems,
+} from "../../../engine/core/notes/notesSlice";
 //Components
 import { ArchiveTable } from "../ArchiveTable";
 import { StatusTable } from "../StatusTable";
@@ -29,6 +32,9 @@ export const Table: React.FC = () => {
     };
     const handleDeleteItem = (itemId: number) => {
         dispatch(deleteItem(itemId));
+    };
+    const handleDeleteAllItems = () => {
+        dispatch(deleteAllItems());
     };
 
     useEffect(() => {}, [items]);
@@ -55,6 +61,7 @@ export const Table: React.FC = () => {
                                     className="js--delete-all"
                                     src={deleteIcon}
                                     alt="DeleteAll"
+                                    onClick={handleDeleteAllItems}
                                 />
                             </th>
                         </tr>

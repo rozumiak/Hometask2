@@ -89,7 +89,10 @@ export const Modal: React.FC<ModalProps> = (props) => {
     }, [editedItem]);
 
     return (
-        <div className="modal" onClick={handleOverlayClick}>
+        <div
+            className="modal"
+            onClick={handleOverlayClick}
+        >
             <div className="modal-content">
                 <h2>Add note</h2>
                 <form className="modal-form" onSubmit={handleSubmit}>

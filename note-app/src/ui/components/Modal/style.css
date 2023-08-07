@@ -1,0 +1,18 @@
+.modal {
+    @apply fixed z-10 left-0 top-0 w-full h-full bg-gray-500 bg-opacity-80;
+}
+
+.modal-content {
+    @apply flex flex-col items-center bg-yellow150  my-40 m-auto p-5 border-solid border-2 border-black w-min;
+}
+.modal-form {
+    @apply justify-center;
+}
+
+#content {
+    @apply resize-none;
+}
+
+#category {
+    @apply mt-1.5 w-full;
+}

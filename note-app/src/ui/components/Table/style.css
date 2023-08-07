@@ -1,0 +1,30 @@
+* {
+    @apply m-0 p-0 box-border;
+}
+body {
+    @apply text-lg bg-yellow160;
+}
+h1 {
+    @apply my-5 text-center;
+}
+.container {
+    @apply flex flex-col w-full h-min bg-white mx-auto max-w-7xl;
+}
+form {
+    @apply flex flex-wrap justify-end text-center min-w-min w-full p-2.5 my-6;
+}
+table {
+    @apply w-full text-center;
+}
+th {
+    @apply bg-gray-400;
+}
+tr {
+    @apply bg-blue60;
+}
+button {
+    @apply mx-3;
+}
+.table-archive {
+    @apply p-2.5;
+}
